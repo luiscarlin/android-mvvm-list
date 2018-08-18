@@ -1,6 +1,7 @@
 package com.luchoc.mvvmlist.model.dao;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -34,7 +35,11 @@ public interface WordDao {
     void deleteAll();
 
 
-    // Get all words by running this query
+    // Get all words by running this query and return a List of them
+    // By returning LiveData, any other code observing getAllWords will get notified when something in the database changes
+    // LiveData is provided by Android. Room will update LiveData data when the DB changes
+    // If you use LiveData without Room, you have to update LiveData data yourself by using MutableLiveData (as LiveData is un-mutable)
+    // To update data, you can use setValue() and postValue()
     @Query("SELECT * from word_table ORDER BY word ASC")
-    List<Word> getAllWords();
+    LiveData<List<Word>> getAllWords();
 }
